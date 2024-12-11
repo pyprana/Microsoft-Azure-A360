@@ -1,0 +1,34 @@
+The Rule Engine Workflow appears to be a system for processing player activity and profile data to evaluate rules and assign rewards. Here’s a detailed breakdown of its components and workflow:
+
+1. Key Components
+Rule Engine Instances: Multiple instances of the rule engine (Instance 1, 2, 3) operate in parallel, allowing for distributed processing of rules.
+CMS Adapter: Acts as an interface between the Rule Engine and various gaming systems (like IGT, Aristocrat, Everi, Konami, Bally) to handle protocol-specific messages.
+Player Data Sources:
+Player Profile: Contains static information about the player.
+Player Activity: Tracks real-time player activity, which may include gameplay statistics, session details, and transaction data.
+Cached Player Data: Frequently accessed player data is stored in a cache to reduce database lookups and speed up rule evaluation.
+Rule Definition Sources:
+Cache: Frequently used rules are cached to avoid fetching them from the database repeatedly.
+Persistent Store (PG - Postgres Database): Stores the master list of rules and player data.
+2. Workflow Steps
+Trigger Activation: The rule engine is activated by a trigger. This trigger could be an event (like player activity) or a schedule (like daily or hourly rule checks).
+Rule Evaluation:
+The Rule Engine fetches rules from the cache. If not available in the cache, it retrieves them from the Postgres (PG) database.
+Player data (both activity and profile) is also fetched from the cache. If not present in the cache, it is pulled from the database and cached for future use.
+Rule Processing:
+The Rule Engine evaluates the rules against the player data.
+If the conditions for a rule are met, the corresponding action (like assigning a reward) is triggered.
+Reward Assignment:
+The system updates the cache with the reward details, using the Player ID as a key and storing information like Rule ID, Reward ID, and Transaction Date.
+This information has no expiration, so it is retained for future use.
+CMS Integration:
+The Rule Engine communicates with CMS systems (like IGT, Aristocrat, Everi, Konami, Bally) via protocol-specific messages to ensure compatibility with each platform.
+Player Profile Update:
+If required, the player’s profile is updated in the system, ensuring future rule evaluations have the most accurate data.
+3. Key Concepts
+Triggers: Events that activate the rule engine. These could be player actions or time-based events.
+Caching: Caching is used to avoid repeated database lookups for player data and rules, improving system speed and efficiency.
+Protocol-Specific Messages: The system interacts with multiple CMS providers, each having its unique message format, handled by protocol-specific adapters.
+No Expiry Cache: Player data and reward assignments are cached without expiry, ensuring the system always has a history of prior rewards linked to specific rules.
+Summary
+The Rule Engine Workflow processes player activity through triggers and schedules, evaluates rules using cached and database-stored player data, assigns rewards, and updates the player profile. The system ensures compatibility with multiple CMS providers using protocol-specific messages, while caching is used to optimize performance.
