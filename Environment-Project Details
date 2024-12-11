@@ -1,0 +1,23 @@
+Sharing the pointers we discussed just to remember:
+
+0. Environments: stage & pre-prod
+1. Frontend application - angular
+2. Backend APIs in .NET Core 6 with c#
+3. IOS apps: player app & host app
+4. Azure Functions Serverless:
+    - Rule Engine (Arvind)
+    - PostgreSQL to MongoDB Serverless Listeners (Mohit)
+5. Databases: PostfreSql & MongoDB
+6. Collecting Infra information:
+Servers info (Cloud or On-Prem)
+CRM Azure subscriptions and their access
+IOS app store release (Abhishek Jain)
+
+7. First task to do:
+Stabilize the pre production env on (DB function issues)
+    - frontend app (angular)
+    - backend api .NET Core 6
+    - databases (PostgreSQL & MongoDB)
+    - Kafka
+    - Redis desktop OR Azure-Redis
+    - Notification Service - utility to send notifications through SMS, Email, In-App
