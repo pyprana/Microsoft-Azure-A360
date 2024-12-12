@@ -1,0 +1,90 @@
+This file is a Bitbucket Pipelines configuration file, similar to a Jenkinsfile but specific to Bitbucket. Here’s a detailed breakdown of its key elements and functionality:
+
+1. Global Configuration
+Docker Services:
+
+definitions:
+  services:
+    docker-with-more-memory:
+      memory: 7168
+      type: docker
+
+A custom Docker service with 7168 MB of memory is defined to support builds requiring more memory, such as large Angular builds or SonarQube scans.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2. Pipelines Configuration
+The pipelines section defines the steps for each branch.
+
+Master Branch
+Steps:
+1. First Step: Echoes a message to confirm the commit.
+
+2. Stage-MConsole App Build:
+. Uses Node.js 16 as the image.
+. Runs the Angular build commands using ng build with stage configuration.
+. Artifacts (build results) are saved in Web App/ManagementConsole/dist/**.
+
+3. Parallel Steps:
+. SonarQube Scan: Uses SonarQube to analyze code quality.
+. Stage-MConsole App, WebApp, and Support: Deploys the Management Console, WebApp, and Support web apps using Atlassian FTP Deploy.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+PreProduction Branch
+. Steps:
+1. First Step: Confirms the commit on PreProduction.
+2. PreProd Build MConsole App:
+. Similar to the master branch, but with authorization logic to ensure only specific users can trigger the build.
+3. Parallel Steps:
+. Deployments of MConsole, WebApp, Support, and App with user authorization.
+. Email notifications are sent after deployment via the atlassian/email-notify pipe.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Production Branch
+Steps:
+1. First Step: Confirms the commit on the production branch.
+2. Prod Build MConsole App:
+. Similar to PreProduction but for the Production environment.
+3. Parallel Steps:
+. Deployments of Slot-MConsole App, WebApp, Support, and App with user authorization.
+. Email notifications are sent after each deployment.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Casino_CRM_Dev Branch
+Steps:
+1. First Step: Confirms the commit on the Casino branch.
+2. Stage-Casino-MConsole App Build:
+. Similar to the Master Branch, but specific to Casino_CRM_Dev.
+. Uses FTP Deploy to upload build artifacts.
+3. Pull Requests
+. Runs a specific pipeline for pull requests on any branch.
+. Simply prints a message but can be customized to run builds/tests for pull requests.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Key Features
+. Manual Triggers: Many steps use trigger: manual, so they only run when manually initiated.
+. FTP Deployments: Deployments are done via the atlassian/ftp-deploy pipe, which uploads files to an FTP server.
+. Authorization:
+  . The pipeline checks if the BITBUCKET_STEP_TRIGGERER_UUID matches the list of authorized users.
+  . If not authorized, the pipeline exits.
+Email Notifications:
+. Uses atlassian/email-notify to send emails on the success or failure of deployments.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+What You Should Focus On
+Authorization Flow: How user UUIDs are checked before deployments.
+Parallel Execution: Different web apps (MConsole, Support, WebApp) are deployed in parallel.
+FTP Deployments: How deployments to remote servers are done.
+Email Notifications: Custom email notifications with detailed HTML formatting.
+If you'd like, I can provide a deeper explanation of any of these sections. Let me know which part you'd like to understand better!
+
+
+
+
+
+
